@@ -1,0 +1,6 @@
+@DNATestingSystem.APIServices.BE.NhanVT_HostAddress = http://localhost:5101
+
+GET {{DNATestingSystem.APIServices.BE.NhanVT_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
