@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DNATestingSystem.Repository.NhanVT.Basic;
+using DNATestingSystem.Repository.NhanVT.DBContext;
 using DNATestingSystem.Repository.NhanVT.Models;
 using Microsoft.EntityFrameworkCore;
 

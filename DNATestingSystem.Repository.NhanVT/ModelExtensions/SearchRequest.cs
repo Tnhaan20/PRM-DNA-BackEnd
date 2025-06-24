@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DNATestingSystem.Repository.NhanVT.Models
+namespace DNATestingSystem.Repository.NhanVT.ModelExtensions
 {
     public class SearchRequest
     {
