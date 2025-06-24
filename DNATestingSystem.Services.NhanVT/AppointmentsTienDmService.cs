@@ -1,6 +1,7 @@
 ﻿using DNATestingSystem.Repository.NhanVT.ModelExtensions;
 using DNATestingSystem.Repository.NhanVT.Models;
 using DNATestingSystem.Repository.NhanVT;
+using DNATestingSystem.Repository.TienDM.ModelExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,39 @@ namespace DNATestingSystem.Services.NhanVT
         public async Task<int> UpdateAsync(AppointmentsTienDm appointmentsTien)
         {
             return await _repository.UpdateAsync(appointmentsTien);
+        }
+
+        // DTO Methods
+        /// <summary>
+        /// Create appointment using DTO to avoid navigation property validation issues
+        /// </summary>
+        public async Task<int> CreateFromDtoAsync(CreateAppointmentsTienDmDto createDto)
+        {
+            return await _repository.CreateFromDtoAsync(createDto);
+        }
+
+        /// <summary>
+        /// Update appointment using DTO to avoid navigation property validation issues
+        /// </summary>
+        public async Task<int> UpdateFromDtoAsync(UpdateAppointmentsTienDmDto updateDto)
+        {
+            return await _repository.UpdateFromDtoAsync(updateDto);
+        }
+
+        /// <summary>
+        /// Get appointment with related data for display
+        /// </summary>
+        public async Task<AppointmentsTienDmDisplayDto?> GetDisplayDtoByIdAsync(int id)
+        {
+            return await _repository.GetDisplayDtoByIdAsync(id);
+        }
+
+        /// <summary>
+        /// Get paginated appointments as display DTOs
+        /// </summary>
+        public async Task<PaginationResult<List<AppointmentsTienDmDisplayDto>>> GetDisplayDtosPaginatedAsync(SearchAppointmentsTienDm searchRequest)
+        {
+            return await _repository.GetDisplayDtosPaginatedAsync(searchRequest);
         }
     }
 }
