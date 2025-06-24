@@ -20,11 +20,12 @@ namespace DNATestingSystem.Services.NhanVT
         Task<int> CreateAsync(AppointmentsTienDm entity);
         Task<int> UpdateAsync(AppointmentsTienDm entity);
         Task<bool> DeleteAsync(int id);
-
+      
         // DTO Methods
         Task<int> CreateFromDtoAsync(CreateAppointmentsTienDmDto createDto);
         Task<int> UpdateFromDtoAsync(UpdateAppointmentsTienDmDto updateDto);
         Task<AppointmentsTienDmDisplayDto?> GetDisplayDtoByIdAsync(int id);
         Task<PaginationResult<List<AppointmentsTienDmDisplayDto>>> GetDisplayDtosPaginatedAsync(SearchAppointmentsTienDm searchRequest);
+
     }
 }

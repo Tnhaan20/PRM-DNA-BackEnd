@@ -70,9 +70,11 @@ namespace DNATestingSystem.Repository.NhanVT
             var query = BuildSearchQuery(id, contactPhone, totalAmount);
             return await ExecutePaginatedQuery(query, page, pageSize);
         }
+        
         /// <summary>
         /// Builds the base search query with includes and filters
         /// </summary>
+
         private IQueryable<AppointmentsTienDm> BuildSearchQuery(int id, string? contactPhone, decimal totalAmount)
         {
             return _context.AppointmentsTienDms
@@ -107,8 +109,10 @@ namespace DNATestingSystem.Repository.NhanVT
                 Items = appointments ?? new List<AppointmentsTienDm>()
             };
         }/// <summary>
+
          /// Override CreateAsync to set CreatedDate automatically
          /// </summary>
+
         public new async Task<int> CreateAsync(AppointmentsTienDm entity)
         {
             if (entity.CreatedDate == null)

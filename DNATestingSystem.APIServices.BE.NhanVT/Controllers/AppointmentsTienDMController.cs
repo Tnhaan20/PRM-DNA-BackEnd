@@ -1,6 +1,7 @@
 ﻿using DNATestingSystem.Repository.NhanVT.ModelExtensions;
 using DNATestingSystem.Repository.NhanVT.Models;
 using DNATestingSystem.Repository.TienDM.ModelExtensions;
+
 using DNATestingSystem.Services.NhanVT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -115,6 +116,7 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
                 return Ok(result);
             return NotFound("Appointment not found or failed to update");
         }// DELETE api/AppointmentsTienDM/{id} - Delete appointment
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(int id)
         {
@@ -279,9 +281,8 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
         //        return NotFound("Appointment not found");
         //    return Ok(appointment);
         //}
-    }    /// <summary>
-         /// Simple search request model for basic search operations
-         /// </summary>
+    }    
+
     public class SimpleSearchRequest
     {
         public int? Id { get; set; }
