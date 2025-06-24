@@ -34,12 +34,16 @@ public partial class AppointmentsTienDm
 
     public bool? IsPaid { get; set; }
 
+
+    [JsonIgnore]
     public virtual AppointmentStatusesTienDm AppointmentStatusesTienDm { get; set; } = null!;
 
     [JsonIgnore]
     public virtual ICollection<SampleThinhLc> SampleThinhLcs { get; set; } = new List<SampleThinhLc>();
 
+    [JsonIgnore]
     public virtual ServicesNhanVt ServicesNhanVt { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual SystemUserAccount UserAccount { get; set; } = null!;
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DNATestingSystem.Repository.NhanVT.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DNATestingSystem.Repository.NhanVT.DBContext;
 
@@ -54,7 +55,17 @@ public partial class SE18_PRN232_SE1730_G3_DNATestingSystemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);Uid=sa;Pwd=12345;Database=SE18_PRN232_SE1730_G3_DNATestingSystem;TrustServerCertificate=True");
+    //=> optionsBuilder.UseSqlServer("Data Source=LAPTOP-09C40UJD\\SQLEXPRESS;Initial Catalog=SE18_PRN232_SE1730_G3_DNATestingSystem;Persist Security Info=True;User ID=sa;Password=12345;Encrypt=False");
+        => optionsBuilder.UseSqlServer(GetConnectionString());
+
+    private String GetConnectionString()
+    {
+        IConfiguration config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", true, true)
+            .Build();
+        return config.GetConnectionString("DefaultConnection");
+
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
