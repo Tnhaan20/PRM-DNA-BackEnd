@@ -22,4 +22,12 @@ namespace DNATestingSystem.Repository.NhanVT.ModelExtensions
         public string? categoryName { get; set; }
 
     }
+
+    //----TienDm--Search---
+    public class SearchAppointmentsTienDm : SearchRequest
+    {
+        public int? AppointmentsTienDmid { get; set; }
+        public string? ContactPhone { get; set; }
+        public decimal? TotalAmount { get; set; }
+    }
 }

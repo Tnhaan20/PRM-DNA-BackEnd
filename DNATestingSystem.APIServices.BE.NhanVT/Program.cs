@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DNATestingSystem.Services.NhanVT;
+using DNATestingSystem.Services.TienDM;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -16,9 +17,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
+//NhanVT------------------------------------------------------------------------------------
 builder.Services.AddScoped<IServicesNhanVTService, ServicesNhanVTService>();
 builder.Services.AddScoped<IServicesCategoryNhanVTService, ServicesCategoryNhanVTService>();
+//------------------------------------------------------------------------------------------
+
+//TienDm------------------------------------------------------------------------------------
+builder.Services.AddScoped<IAppointmentsTienDmService, AppointmentsTienDmService>();
+builder.Services.AddScoped<IAppointmentStatusesTienDmService, AppointmentStatusesTienDmService>();
+//------------------------------------------------------------------------------------------
 
 builder.Services.AddScoped<SystemUserAccountService>();
 builder.Services.AddControllers()

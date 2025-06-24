@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SearchAppointmentsTienDm = DNATestingSystem.Repository.NhanVT.ModelExtensions.SearchAppointmentsTienDm;
 
 namespace DNATestingSystem.Repository.NhanVT
 {
@@ -44,36 +45,37 @@ namespace DNATestingSystem.Repository.NhanVT
         /// <summary>
         /// Get all appointments with pagination - optimized for large datasets
         /// </summary>
-        //public async Task<PaginationResult<List<AppointmentsTienDm>>> GetAllPaginatedAsync(int page, int pageSize)
-        //{
-        //    // Use empty search criteria to get all items with pagination
-        //    return await SearchAsync(0, string.Empty, 0, page, pageSize);
-        //}
+        public async Task<PaginationResult<List<AppointmentsTienDm>>> GetAllPaginatedAsync(int page, int pageSize)
+        {
+            // Use empty search criteria to get all items with pagination
+            return await SearchAsync(0, string.Empty, 0, page, pageSize);
+        }
 
         /// <summary>
         /// Search appointments with individual parameters
         /// </summary>
-        //public async Task<PaginationResult<List<AppointmentsTienDm>>> SearchAsync(int id, string contactPhone, decimal totalAmount, int page, int pageSize)
-        //{
-        //    var query = BuildSearchQuery(id, contactPhone, totalAmount);
-        //    return await ExecutePaginatedQuery(query, page, pageSize);
-        //}
+        public async Task<PaginationResult<List<AppointmentsTienDm>>> SearchAsync(int id, string contactPhone, decimal totalAmount, int page, int pageSize)
+        {
+            var query = BuildSearchQuery(id, contactPhone, totalAmount);
+            return await ExecutePaginatedQuery(query, page, pageSize);
+        }
 
         /// <summary>
         /// Search appointments using SearchRequest model
         /// </summary>
-        //public async Task<PaginationResult<List<AppointmentsTienDm>>> SearchAsync(SearchAppointmentsTienDm searchRequest)
-        //{
-        //    // Set default values if null
-        //    var page = searchRequest.CurrentPage ?? 1;
-        //    var pageSize = searchRequest.PageSize ?? 10;
-        //    var contactPhone = searchRequest.ContactPhone;
-        //    var totalAmount = searchRequest.TotalAmount ?? 0;
-        //    var id = searchRequest.AppointmentsTienDmid ?? 0;
+        public async Task<PaginationResult<List<AppointmentsTienDm>>> SearchAsync(SearchAppointmentsTienDm searchRequest)
+        {
+            // Set default values if null
+            var page = searchRequest.CurrentPage ?? 1;
+            var pageSize = searchRequest.PageSize ?? 10;
+            var contactPhone = searchRequest.ContactPhone;
+            var totalAmount = searchRequest.TotalAmount ?? 0;
+            var id = searchRequest.AppointmentsTienDmid ?? 0;
 
-        //    var query = BuildSearchQuery(id, contactPhone, totalAmount);
-        //    return await ExecutePaginatedQuery(query, page, pageSize);
-        //}        /// <summary>
+            var query = BuildSearchQuery(id, contactPhone, totalAmount);
+            return await ExecutePaginatedQuery(query, page, pageSize);
+        }        
+        /// <summary>
                  /// Builds the base search query with includes and filters
                  /// </summary>
         private IQueryable<AppointmentsTienDm> BuildSearchQuery(int id, string? contactPhone, decimal totalAmount)
@@ -90,31 +92,31 @@ namespace DNATestingSystem.Repository.NhanVT
         /// <summary>
         /// Executes paginated query and returns PaginationResult
         /// </summary>
-        //private async Task<PaginationResult<List<AppointmentsTienDm>>> ExecutePaginatedQuery(IQueryable<AppointmentsTienDm> query, int page, int pageSize)
-        //{
-        //    // Get total count for pagination
-        //    var totalItems = await query.CountAsync();
+        private async Task<PaginationResult<List<AppointmentsTienDm>>> ExecutePaginatedQuery(IQueryable<AppointmentsTienDm> query, int page, int pageSize)
+        {
+            // Get total count for pagination
+            var totalItems = await query.CountAsync();
 
-        //    // Calculate total pages
-        //    var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            // Calculate total pages
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-        //    // Apply pagination
-        //    var appointments = await query
-        //        .Skip((page - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .ToListAsync();
+            // Apply pagination
+            var appointments = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-        //    return new PaginationResult<List<AppointmentsTienDm>>
-        //    {
-        //        TotalItems = totalItems,
-        //        TotalPages = totalPages,
-        //        CurrentPages = page,
-        //        PageSize = pageSize,
-        //        Items = appointments ?? new List<AppointmentsTienDm>()
-        //    };
-        //}/// <summary>
-         /// Override CreateAsync to set CreatedDate automatically
-         /// </summary>
+            return new PaginationResult<List<AppointmentsTienDm>>
+            {
+                TotalItems = totalItems,
+                TotalPage = totalPages,
+                CurrentPage = page,
+                PageSize = pageSize,
+                Items = appointments ?? new List<AppointmentsTienDm>()
+            };
+        }/// <summary>
+            /// Override CreateAsync to set CreatedDate automatically
+            /// </summary>
         public new async Task<int> CreateAsync(AppointmentsTienDm entity)
         {
             if (entity.CreatedDate == null)
