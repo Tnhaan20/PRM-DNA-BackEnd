@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DNATestingSystem.Repository.NhanVT.Models;
 
@@ -33,5 +34,14 @@ public partial class ServicesNhanVt
 
     public bool? IsActive { get; set; }
 
+    [JsonIgnore]
     public virtual ServiceCategoriesNhanVt ServiceCategoryNhanVt { get; set; }
+
+    // Navigation property for appointments - JsonIgnore to prevent circular reference
+    [JsonIgnore]
+    public virtual ICollection<AppointmentsTienDm> AppointmentsTienDms { get; set; } = new List<AppointmentsTienDm>();
+
+    // Navigation property for user services - JsonIgnore to prevent circular reference
+    [JsonIgnore]
+    public virtual ICollection<UserServiceNhanVt> UserServiceNhanVts { get; set; } = new List<UserServiceNhanVt>();
 }
