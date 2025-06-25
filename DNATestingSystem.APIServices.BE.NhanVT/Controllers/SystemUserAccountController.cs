@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DNATestingSystem.APIServices.BE.NhanVT.Controllers
 {
-   
+
     public class SystemUserAccountController : Controller
     {
         private readonly IConfiguration _config;
@@ -43,6 +43,8 @@ namespace DNATestingSystem.APIServices.BE.NhanVT.Controllers
                     , new Claim[]
                     {
                 new(ClaimTypes.Name, systemUserAccount.UserName),
+                new(ClaimTypes.NameIdentifier, systemUserAccount.UserAccountId.ToString()),
+                new("UserId", systemUserAccount.UserAccountId.ToString()),
                 //new(ClaimTypes.Email, systemUserAccount.Email),
                 new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
                     },
