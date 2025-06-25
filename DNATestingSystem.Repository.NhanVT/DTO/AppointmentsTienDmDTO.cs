@@ -39,7 +39,6 @@ namespace DNATestingSystem.Repository.TienDM.ModelExtensions
         public string? Notes { get; set; }
 
         [Required(ErrorMessage = "Total amount is required")]
-        [Range(0.01, 999999.99, ErrorMessage = "Total amount must be between 0.01 and 999,999.99")]
         public decimal TotalAmount { get; set; }
 
         public bool? IsPaid { get; set; } = false;
