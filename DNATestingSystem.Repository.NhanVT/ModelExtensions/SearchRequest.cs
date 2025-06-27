@@ -29,5 +29,6 @@ namespace DNATestingSystem.Repository.NhanVT.ModelExtensions
         public int? AppointmentsTienDmid { get; set; }
         public string? ContactPhone { get; set; }
         public decimal? TotalAmount { get; set; }
+        public int? AppointmentStatusesTienDmid { get; set; }
     }
 }

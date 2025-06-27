@@ -70,7 +70,7 @@ namespace DNATestingSystem.Repository.NhanVT
             var query = BuildSearchQuery(id, contactPhone, totalAmount);
             return await ExecutePaginatedQuery(query, page, pageSize);
         }
-        
+
         /// <summary>
         /// Builds the base search query with includes and filters
         /// </summary>
@@ -242,7 +242,8 @@ namespace DNATestingSystem.Repository.NhanVT
                 .Include(a => a.UserAccount)
                 .Where(a => (string.IsNullOrEmpty(searchRequest.ContactPhone) || a.ContactPhone.Contains(searchRequest.ContactPhone))
                     && (searchRequest.TotalAmount == null || a.TotalAmount == searchRequest.TotalAmount)
-                    && (searchRequest.AppointmentsTienDmid == null || a.AppointmentsTienDmid == searchRequest.AppointmentsTienDmid));
+                    && (searchRequest.AppointmentsTienDmid == null || a.AppointmentsTienDmid == searchRequest.AppointmentsTienDmid)
+                    && (searchRequest.AppointmentStatusesTienDmid == null || a.AppointmentStatusesTienDmid == searchRequest.AppointmentStatusesTienDmid));
 
             var totalItems = await query.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);

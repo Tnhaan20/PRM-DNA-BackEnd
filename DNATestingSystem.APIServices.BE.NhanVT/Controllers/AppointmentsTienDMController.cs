@@ -1,11 +1,14 @@
 ﻿using DNATestingSystem.Repository.NhanVT.ModelExtensions;
 using DNATestingSystem.Repository.NhanVT.Models;
 using DNATestingSystem.Repository.TienDM.ModelExtensions;
-
 using DNATestingSystem.Services.NhanVT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SearchAppointmentsTienDm = DNATestingSystem.Repository.NhanVT.ModelExtensions.SearchAppointmentsTienDm;
+using ApproveAppointmentDto = DNATestingSystem.Repository.TienDM.ModelExtensions.ApproveAppointmentDto;
+using DenyAppointmentDto = DNATestingSystem.Repository.TienDM.ModelExtensions.DenyAppointmentDto;
+using UpdateAppointmentStatusDto = DNATestingSystem.Repository.TienDM.ModelExtensions.UpdateAppointmentStatusDto;
+using AppointmentTimelineDto = DNATestingSystem.Repository.TienDM.ModelExtensions.AppointmentTimelineDto;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -75,8 +78,8 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
             if (appointment?.AppointmentsTienDmid == 0)
                 return NotFound();
             return Ok(appointment);
-        }        
-        
+        }
+
         // POST api/AppointmentsTienDM - Create new appointment using DTO
         [HttpPost]
         public async Task<ActionResult<int>> Create([FromBody] CreateAppointmentsTienDmDto createDto)
@@ -97,8 +100,8 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
             if (result > 0)
                 return CreatedAtAction(nameof(GetById), new { id = result }, result);
             return BadRequest("Failed to create appointment");
-        }       
-        
+        }
+
         // PUT api/AppointmentsTienDM/{id} - Update existing appointment using DTO
         [HttpPut("{id}")]
         public async Task<ActionResult<int>> Update(int id, [FromBody] UpdateAppointmentsTienDmDto updateDto)
@@ -281,23 +284,191 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
         //        return NotFound("Appointment not found");
         //    return Ok(appointment);
         //}
-    }    
 
-    public class SimpleSearchRequest
-    {
-        public int? Id { get; set; }
-        public string? ContactPhone { get; set; }
-        public decimal? TotalAmount { get; set; }
-        public int? Page { get; set; } = 1;
-        public int? PageSize { get; set; } = 10;
-    }
+        // PUT api/AppointmentsTienDM/{id}/approve - Approve appointment (Staff only)
+        [HttpPut("{id}/approve")]
+        //[Authorize(Roles = "2,3,4")] // Staff, Manager, Admin
+        public async Task<ActionResult<bool>> ApproveAppointment(int id, [FromBody] ApproveAppointmentDto approveDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-    /// <summary>
-    /// Pagination request model for basic pagination operations
-    /// </summary>
-    public class PaginationRequest
-    {
-        public int? Page { get; set; } = 1;
-        public int? PageSize { get; set; } = 10;
+            // Ensure ID matches
+            approveDto.AppointmentId = id;
+
+            // Get user ID from JWT token for audit trail
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                approveDto.ApprovedBy = userId;
+            }
+
+            var result = await _appointmentsTienDmService.ApproveAppointmentAsync(approveDto);
+            if (result)
+                return Ok(true);
+            return NotFound("Appointment not found or cannot be approved");
+        }
+
+        // PUT api/AppointmentsTienDM/{id}/deny - Deny appointment (Staff only)
+        [HttpPut("{id}/deny")]
+        //[Authorize(Roles = "2,3,4")] // Staff, Manager, Admin
+        public async Task<ActionResult<bool>> DenyAppointment(int id, [FromBody] DenyAppointmentDto denyDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Ensure ID matches
+            denyDto.AppointmentId = id;
+
+            // Get user ID from JWT token for audit trail
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                denyDto.DeniedBy = userId;
+            }
+
+            var result = await _appointmentsTienDmService.DenyAppointmentAsync(denyDto);
+            if (result)
+                return Ok(true);
+            return NotFound("Appointment not found or cannot be denied");
+        }
+
+        // PUT api/AppointmentsTienDM/{id}/update-status - Update appointment status
+        [HttpPut("{id}/update-status")]
+        //[Authorize(Roles = "2,3,4")] // Staff, Manager, Admin
+        public async Task<ActionResult<bool>> UpdateAppointmentStatus(int id, [FromBody] UpdateAppointmentStatusDto statusDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Ensure ID matches
+            statusDto.AppointmentId = id;
+
+            // Get user ID from JWT token for audit trail
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId");
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+            {
+                statusDto.UpdatedBy = userId;
+            }
+
+            var result = await _appointmentsTienDmService.UpdateAppointmentStatusAsync(statusDto);
+            if (result)
+                return Ok(true);
+            return NotFound("Appointment not found or status cannot be updated");
+        }
+
+        // GET api/AppointmentsTienDM/{id}/timeline - Get appointment timeline for customer
+        [HttpGet("{id}/timeline")]
+        public async Task<ActionResult<AppointmentTimelineDto>> GetAppointmentTimeline(int id)
+        {
+            var timeline = await _appointmentsTienDmService.GetAppointmentTimelineAsync(id);
+            if (timeline == null)
+                return NotFound("Appointment not found");
+            return Ok(timeline);
+        }
+
+        // GET api/AppointmentsTienDM/pending - Get pending appointments for staff
+        [HttpGet("pending")]
+        //[Authorize(Roles = "2,3,4")] // Staff, Manager, Admin
+        public async Task<ActionResult<List<AppointmentsTienDmDisplayDto>>> GetPendingAppointments()
+        {
+            var pendingAppointments = await _appointmentsTienDmService.GetPendingAppointmentsForStaffAsync();
+            return Ok(pendingAppointments);
+        }
+
+        // GET api/AppointmentsTienDM/user/{userId} - Get appointments for a specific user
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<List<AppointmentsTienDmDisplayDto>>> GetAppointmentsByUser(int userId)
+        {
+            var searchRequest = new SearchAppointmentsTienDm
+            {
+                CurrentPage = 1,
+                PageSize = 100 // Get all appointments for the user
+            };
+
+            var result = await _appointmentsTienDmService.SearchAsync(searchRequest);
+
+            // Filter by user ID (this should be handled in the service layer for better performance)
+            var userAppointments = result.Items?.Where(a => a.UserAccountId == userId).ToList() ?? new List<AppointmentsTienDm>();
+
+            // Convert to display DTOs
+            var displayDtos = new List<AppointmentsTienDmDisplayDto>();
+            foreach (var appointment in userAppointments)
+            {
+                var displayDto = await _appointmentsTienDmService.GetDisplayDtoByIdAsync(appointment.AppointmentsTienDmid);
+                if (displayDto != null)
+                {
+                    displayDtos.Add(displayDto);
+                }
+            }
+
+            return Ok(displayDtos);
+        }
+
+        // GET api/AppointmentsTienDM/status/{statusId} - Get appointments by status
+        [HttpGet("status/{statusId}")]
+        public async Task<ActionResult<PaginationResult<List<AppointmentsTienDm>>>> GetAppointmentsByStatus(
+            int statusId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var searchRequest = new SearchAppointmentsTienDm
+            {
+                AppointmentStatusesTienDmid = statusId,
+                CurrentPage = page,
+                PageSize = pageSize
+            };
+
+            var result = await _appointmentsTienDmService.SearchAsync(searchRequest);
+            return Ok(result);
+        }
+
+        // GET api/AppointmentsTienDM/today - Get today's appointments
+        [HttpGet("today")]
+        public async Task<ActionResult<List<AppointmentsTienDmDisplayDto>>> GetTodaysAppointments()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            // Get all appointments for today (this should be enhanced with proper date filtering in service layer)
+            var searchRequest = new SearchAppointmentsTienDm
+            {
+                CurrentPage = 1,
+                PageSize = 100
+            };
+
+            var result = await _appointmentsTienDmService.SearchAsync(searchRequest);
+
+            // Filter by today's date (this should be handled in the service layer for better performance)
+            var todaysAppointments = result.Items?.Where(a => a.AppointmentDate == today).ToList() ?? new List<AppointmentsTienDm>();
+
+            // Convert to display DTOs
+            var displayDtos = new List<AppointmentsTienDmDisplayDto>();
+            foreach (var appointment in todaysAppointments)
+            {
+                var displayDto = await _appointmentsTienDmService.GetDisplayDtoByIdAsync(appointment.AppointmentsTienDmid);
+                if (displayDto != null)
+                {
+                    displayDtos.Add(displayDto);
+                }
+            }
+
+            return Ok(displayDtos);
+        }
+
+        // GET api/AppointmentsTienDM/{id}/display - Get detailed appointment display DTO
+        [HttpGet("{id}/display")]
+        public async Task<ActionResult<AppointmentsTienDmDisplayDto>> GetAppointmentDisplay(int id)
+        {
+            var displayDto = await _appointmentsTienDmService.GetDisplayDtoByIdAsync(id);
+            if (displayDto == null)
+                return NotFound("Appointment not found");
+            return Ok(displayDto);
+        }
     }
 }

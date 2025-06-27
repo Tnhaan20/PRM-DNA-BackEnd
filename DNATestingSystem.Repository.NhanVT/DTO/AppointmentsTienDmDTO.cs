@@ -115,4 +115,90 @@ namespace DNATestingSystem.Repository.TienDM.ModelExtensions
         public string? UserName { get; set; }
         public string? UserEmail { get; set; }
     }
+
+    /// <summary>
+    /// DTO for approving appointments by staff
+    /// </summary>
+    public class ApproveAppointmentDto
+    {
+        [Required(ErrorMessage = "Appointment ID is required")]
+        public int AppointmentId { get; set; }
+
+        [StringLength(500, ErrorMessage = "Approval notes cannot exceed 500 characters")]
+        public string? ApprovalNotes { get; set; }
+
+        public int ApprovedBy { get; set; }
+
+        public DateTime ApprovedDate { get; set; } = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// DTO for denying/cancelling appointments by staff
+    /// </summary>
+    public class DenyAppointmentDto
+    {
+        [Required(ErrorMessage = "Appointment ID is required")]
+        public int AppointmentId { get; set; }
+
+        [Required(ErrorMessage = "Reason for denial is required")]
+        [StringLength(500, MinimumLength = 10, ErrorMessage = "Denial reason must be between 10 and 500 characters")]
+        public string DenialReason { get; set; } = null!;
+
+        public int DeniedBy { get; set; }
+
+        public DateTime DeniedDate { get; set; } = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// DTO for updating appointment status
+    /// </summary>
+    public class UpdateAppointmentStatusDto
+    {
+        [Required(ErrorMessage = "Appointment ID is required")]
+        public int AppointmentId { get; set; }
+
+        [Required(ErrorMessage = "New status is required")]
+        [Range(1, 5, ErrorMessage = "Status must be between 1 and 5")]
+        public int NewStatusId { get; set; }
+
+        [StringLength(500, ErrorMessage = "Status notes cannot exceed 500 characters")]
+        public string? StatusNotes { get; set; }
+
+        public int UpdatedBy { get; set; }
+    }
+
+    /// <summary>
+    /// DTO for appointment timeline display
+    /// </summary>
+    public class AppointmentTimelineDto
+    {
+        public int AppointmentId { get; set; }
+        public string CustomerName { get; set; } = null!;
+        public string ServiceName { get; set; } = null!;
+        public DateOnly AppointmentDate { get; set; }
+        public TimeOnly AppointmentTime { get; set; }
+        public string CurrentStatus { get; set; } = null!;
+        public int StatusId { get; set; }
+        public List<TimelineStepDto> Timeline { get; set; } = new List<TimelineStepDto>();
+        public decimal TotalAmount { get; set; }
+        public bool IsPaid { get; set; }
+        public string SamplingMethod { get; set; } = null!;
+        public string? Address { get; set; }
+        public string ContactPhone { get; set; } = null!;
+        public string? Notes { get; set; }
+    }
+
+    /// <summary>
+    /// DTO for timeline step
+    /// </summary>
+    public class TimelineStepDto
+    {
+        public int StepNumber { get; set; }
+        public string StepName { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public bool IsCompleted { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CompletedDate { get; set; }
+        public string? Notes { get; set; }
+    }
 }
