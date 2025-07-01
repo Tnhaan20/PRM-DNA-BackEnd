@@ -95,9 +95,9 @@ namespace DNATestingSystem.Repository.TienDM.ModelExtensions
     public class AppointmentsTienDmDisplayDto
     {
         public int AppointmentsTienDmid { get; set; }
-        public int UserAccountId { get; set; }
-        public int ServicesNhanVtid { get; set; }
-        public int AppointmentStatusesTienDmid { get; set; }
+        public int UserAccountId { get; set; } // FK: Join to SystemUserAccount to get UserName
+        public int ServicesNhanVtid { get; set; } // FK: Join to ServicesNhanVt to get ServiceName
+        public int AppointmentStatusesTienDmid { get; set; } // FK: Join to AppointmentStatusesTienDm to get StatusName
         public DateOnly AppointmentDate { get; set; }
         public TimeOnly AppointmentTime { get; set; }
         public string SamplingMethod { get; set; } = null!;
@@ -109,11 +109,11 @@ namespace DNATestingSystem.Repository.TienDM.ModelExtensions
         public decimal TotalAmount { get; set; }
         public bool? IsPaid { get; set; }
 
-        // Navigation properties for display
-        public string? StatusName { get; set; }
-        public string? ServiceName { get; set; }
-        public string? UserName { get; set; }
-        public string? UserEmail { get; set; }
+        // Display fields populated via JOINs for UI
+        public string? StatusName { get; set; } // From AppointmentStatusesTienDm
+        public string? ServiceName { get; set; } // From ServicesNhanVt
+        public string? UserName { get; set; } // From SystemUserAccount
+        public string? UserEmail { get; set; } // From SystemUserAccount
     }
 
     /// <summary>
