@@ -30,6 +30,7 @@ namespace DNATestingSystem.Services.NhanVT
         Task<int> UpdateFromDtoAsync(UpdateAppointmentsTienDmDto updateDto);
         Task<AppointmentsTienDmDisplayDto?> GetDisplayDtoByIdAsync(int id);
         Task<PaginationResult<List<AppointmentsTienDmDisplayDto>>> GetDisplayDtosPaginatedAsync(SearchAppointmentsTienDm searchRequest);
+        Task<List<AppointmentsTienDmDisplayDto>> GetDisplayDtosByUserIdAsync(int userId);
 
         // Approval/Denial Methods
         Task<bool> ApproveAppointmentAsync(ApproveAppointmentDto approveDto);

@@ -273,5 +273,13 @@ namespace DNATestingSystem.Services.NhanVT
 
             return steps;
         }
+
+        /// <summary>
+        /// Get all appointments for a specific user, including display data (ServiceName, StatusName, ...)
+        /// </summary>
+        public async Task<List<AppointmentsTienDmDisplayDto>> GetDisplayDtosByUserIdAsync(int userId)
+        {
+            return await _repository.GetDisplayDtosByUserIdAsync(userId);
+        }
     }
 }

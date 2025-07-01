@@ -114,6 +114,11 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
             // Set the ID from route parameter
             updateDto.AppointmentsTienDmid = id;
 
+            // Log các trường tiếng Việt để kiểm tra encoding
+            Console.WriteLine($"[LOG] UpdateAppointment - SamplingMethod: {updateDto.SamplingMethod}");
+            Console.WriteLine($"[LOG] UpdateAppointment - Address: {updateDto.Address}");
+            Console.WriteLine($"[LOG] UpdateAppointment - Notes: {updateDto.Notes}");
+
             var result = await _appointmentsTienDmService.UpdateFromDtoAsync(updateDto);
             if (result > 0)
                 return Ok(result);
@@ -386,29 +391,8 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<AppointmentsTienDmDisplayDto>>> GetAppointmentsByUser(int userId)
         {
-            var searchRequest = new SearchAppointmentsTienDm
-            {
-                CurrentPage = 1,
-                PageSize = 100 // Get all appointments for the user
-            };
-
-            var result = await _appointmentsTienDmService.SearchAsync(searchRequest);
-
-            // Filter by user ID (this should be handled in the service layer for better performance)
-            var userAppointments = result.Items?.Where(a => a.UserAccountId == userId).ToList() ?? new List<AppointmentsTienDm>();
-
-            // Convert to display DTOs
-            var displayDtos = new List<AppointmentsTienDmDisplayDto>();
-            foreach (var appointment in userAppointments)
-            {
-                var displayDto = await _appointmentsTienDmService.GetDisplayDtoByIdAsync(appointment.AppointmentsTienDmid);
-                if (displayDto != null)
-                {
-                    displayDtos.Add(displayDto);
-                }
-            }
-
-            return Ok(displayDtos);
+            var result = await _appointmentsTienDmService.GetDisplayDtosByUserIdAsync(userId);
+            return Ok(result);
         }
 
         // GET api/AppointmentsTienDM/status/{statusId} - Get appointments by status
