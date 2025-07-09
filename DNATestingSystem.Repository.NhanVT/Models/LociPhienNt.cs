@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DNATestingSystem.Repository.NhanVT.Models;
 
@@ -17,7 +18,9 @@ public partial class LociPhienNt
 
     public DateTime? CreatedAt { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<AlleleResultsPhienNt> AlleleResultsPhienNts { get; set; } = new List<AlleleResultsPhienNt>();
 
+    [JsonIgnore]
     public virtual ICollection<LocusMatchResultsPhienNt> LocusMatchResultsPhienNts { get; set; } = new List<LocusMatchResultsPhienNt>();
 }

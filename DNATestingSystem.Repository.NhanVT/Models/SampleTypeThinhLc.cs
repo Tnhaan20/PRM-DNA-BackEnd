@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DNATestingSystem.Repository.NhanVT.Models;
 
@@ -21,5 +22,6 @@ public partial class SampleTypeThinhLc
 
     public DateTime? DeletedAt { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<SampleThinhLc> SampleThinhLcs { get; set; } = new List<SampleThinhLc>();
 }

@@ -12,9 +12,9 @@ namespace DNATestingSystem.APIServices.BE.NhanVT.Controllers
     public class SystemUserAccountController : Controller
     {
         private readonly IConfiguration _config;
-        private readonly SystemUserAccountService _userAccountsService;
+        private readonly ISystemUserAccountService _userAccountsService;
 
-        public SystemUserAccountController(IConfiguration config, SystemUserAccountService userAccountsService)
+        public SystemUserAccountController(IConfiguration config, ISystemUserAccountService userAccountsService)
         {
             _config = config;
             _userAccountsService = userAccountsService;
@@ -35,11 +35,14 @@ namespace DNATestingSystem.APIServices.BE.NhanVT.Controllers
 
         private string GenerateJSONWebToken(SystemUserAccount systemUserAccount)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var jwtKey = _config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"]
-                    , _config["Jwt:Audience"]
+            var issuer = _config["Jwt:Issuer"] ?? throw new InvalidOperationException("JWT Issuer is not configured.");
+            var audience = _config["Jwt:Audience"] ?? throw new InvalidOperationException("JWT Audience is not configured.");
+            var token = new JwtSecurityToken(issuer
+                    , audience
                     , new Claim[]
                     {
                 new(ClaimTypes.Name, systemUserAccount.UserName),

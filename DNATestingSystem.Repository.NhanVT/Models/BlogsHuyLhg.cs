@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DNATestingSystem.Repository.NhanVT.Models;
 
@@ -31,7 +32,9 @@ public partial class BlogsHuyLhg
 
     public DateTime? ModifiedDate { get; set; }
 
+    [JsonIgnore]
     public virtual BlogCategoriesHuyLhg BlogCategoryHuyLhg { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual SystemUserAccount User { get; set; } = null!;
 }

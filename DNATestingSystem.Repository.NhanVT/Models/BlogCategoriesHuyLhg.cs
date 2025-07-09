@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DNATestingSystem.Repository.NhanVT.Models;
 
@@ -15,5 +16,6 @@ public partial class BlogCategoriesHuyLhg
 
     public bool IsActive { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<BlogsHuyLhg> BlogsHuyLhgs { get; set; } = new List<BlogsHuyLhg>();
 }

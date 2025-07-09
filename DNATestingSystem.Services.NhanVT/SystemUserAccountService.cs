@@ -8,7 +8,7 @@ using DNATestingSystem.Repository.NhanVT.Models;
 
 namespace DNATestingSystem.Services.NhanVT
 {
-    public class SystemUserAccountService
+    public class SystemUserAccountService : ISystemUserAccountService
     {
         private readonly UserAccountRepository _repository;
 

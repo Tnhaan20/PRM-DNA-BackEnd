@@ -3,6 +3,8 @@ using DNATestingSystem.Repository.NhanVT.Models;
 using DNATestingSystem.Services.NhanVT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DNATestingSystem.APIServices.BE.NhanVT.Helpers;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,8 +15,15 @@ namespace DNATestingSystem.APIServices.BE.NhanVT.Controllers
     public class ServicesNhanVTsController : ControllerBase
     {
         private readonly IServicesNhanVTService _servicesNhanVTService;
+        private readonly ILogger<ServicesNhanVTsController> _logger;
 
-        public ServicesNhanVTsController(IServicesNhanVTService servicesNhanVTService) => _servicesNhanVTService = servicesNhanVTService;    
+        public ServicesNhanVTsController(
+            IServicesNhanVTService servicesNhanVTService, 
+            ILogger<ServicesNhanVTsController> logger)
+        {
+            _servicesNhanVTService = servicesNhanVTService;
+            _logger = logger;
+        }
         // GET: api/<ServiceNhanVTsController>
         [HttpGet]
         [Authorize(Roles = "1,2")]
@@ -27,7 +36,12 @@ namespace DNATestingSystem.APIServices.BE.NhanVT.Controllers
         [HttpGet("{id}")]
         public async Task<ServicesNhanVt> Get(int id)
         {
-            return await _servicesNhanVTService.GetServicesByIdAsync(id);
+            var result = await _servicesNhanVTService.GetServicesByIdAsync(id);
+            
+            // Log the serialized result to verify navigation properties are excluded
+            _logger.LogInformation($"Serialized service: {result.ToJson()}");
+            
+            return result;
         }
 
         // POST api/<ServiceNhanVTsController>

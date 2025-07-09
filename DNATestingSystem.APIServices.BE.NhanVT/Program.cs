@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DNATestingSystem.APIServices.BE.NhanVT.Helpers;
 using DNATestingSystem.Services.NhanVT;
 using DNATestingSystem.Services.TienDM;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,6 +21,29 @@ builder.Services.AddSwaggerGen();
 //NhanVT------------------------------------------------------------------------------------
 builder.Services.AddScoped<IServicesNhanVTService, ServicesNhanVTService>();
 builder.Services.AddScoped<IServicesCategoryNhanVTService, ServicesCategoryNhanVTService>();
+
+// PhienNT Services
+builder.Services.AddScoped<IAlleleResultsPhienNtService, AlleleResultsPhienNtService>();
+builder.Services.AddScoped<IDnaTestsPhienNtService, DnaTestsPhienNtService>();
+builder.Services.AddScoped<ILociPhienNtService, LociPhienNtService>();
+builder.Services.AddScoped<ILocusMatchResultsPhienNtService, LocusMatchResultsPhienNtService>();
+
+// ThinhLC Services
+builder.Services.AddScoped<IProfileThinhLcService, ProfileThinhLcService>();
+builder.Services.AddScoped<IProfileRelationshipThinhLcService, ProfileRelationshipThinhLcService>();
+builder.Services.AddScoped<ISampleThinhLcService, SampleThinhLcService>();
+builder.Services.AddScoped<ISampleTypeThinhLcService, SampleTypeThinhLcService>();
+
+// HuyLHG Services
+builder.Services.AddScoped<IBlogCategoriesHuyLhgService, BlogCategoriesHuyLhgService>();
+builder.Services.AddScoped<IBlogsHuyLhgService, BlogsHuyLhgService>();
+
+// GiapHD Services
+builder.Services.AddScoped<IOrderGiapHdService, OrderGiapHdService>();
+builder.Services.AddScoped<ITransactionsGiapHdService, TransactionsGiapHdService>();
+
+// UserService
+builder.Services.AddScoped<IUserServiceNhanVtService, UserServiceNhanVtService>();
 //------------------------------------------------------------------------------------------
 
 //TienDm------------------------------------------------------------------------------------
@@ -27,7 +51,7 @@ builder.Services.AddScoped<IAppointmentsTienDmService, AppointmentsTienDmService
 builder.Services.AddScoped<IAppointmentStatusesTienDmService, AppointmentStatusesTienDmService>();
 //------------------------------------------------------------------------------------------
 
-builder.Services.AddScoped<SystemUserAccountService>();
+builder.Services.AddScoped<ISystemUserAccountService, SystemUserAccountService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -35,7 +59,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-
+        options.JsonSerializerOptions.Converters.Add(new DNATestingSystem.APIServices.BE.NhanVT.Helpers.JsonIgnoreVirtualMembersConverter());
     });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -47,9 +71,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "DefaultIssuer",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "DefaultAudience",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "defaultkeyfordevthisshouldbereplacedprod12345")),
             // ClockSkew = TimeSpan.Zero
         };
     });
