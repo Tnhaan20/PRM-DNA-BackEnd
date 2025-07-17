@@ -32,6 +32,9 @@ namespace DNATestingSystem.Services.NhanVT
         Task<PaginationResult<List<AppointmentsTienDmDisplayDto>>> GetDisplayDtosPaginatedAsync(SearchAppointmentsTienDm searchRequest);
         Task<List<AppointmentsTienDmDisplayDto>> GetDisplayDtosByUserIdAsync(int userId);
 
+        // NEW: Get display DTOs by status for staff dashboard
+        Task<List<AppointmentsTienDmDisplayDto>> GetDisplayDtosByStatusForStaffAsync(int statusId);
+
         // Approval/Denial Methods
         Task<bool> ApproveAppointmentAsync(ApproveAppointmentDto approveDto);
         Task<bool> DenyAppointmentAsync(DenyAppointmentDto denyDto);

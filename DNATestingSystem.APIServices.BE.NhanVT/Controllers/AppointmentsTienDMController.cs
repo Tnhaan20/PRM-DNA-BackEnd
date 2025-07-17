@@ -454,5 +454,12 @@ namespace DNATestingSystem.APIServices.BE.TienDM.Controllers
                 return NotFound("Appointment not found");
             return Ok(displayDto);
         }
+        // GET api/AppointmentsTienDM/status/{statusId}/display - Get appointments by status as display DTOs (for staff dashboard)
+        [HttpGet("status/{statusId}/display")]
+        public async Task<ActionResult<List<AppointmentsTienDmDisplayDto>>> GetAppointmentsDisplayByStatus(int statusId)
+        {
+            var displayDtos = await _appointmentsTienDmService.GetDisplayDtosByStatusForStaffAsync(statusId);
+            return Ok(displayDtos);
+        }
     }
 }

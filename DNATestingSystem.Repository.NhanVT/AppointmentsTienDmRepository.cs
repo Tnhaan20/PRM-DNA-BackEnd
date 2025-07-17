@@ -318,5 +318,40 @@ namespace DNATestingSystem.Repository.NhanVT
                 UserEmail = appointment.UserAccount?.Email
             }).ToList();
         }
+
+        /// <summary>
+        /// Get all appointments for a specific status, including display data (for staff dashboard)
+        /// </summary>
+        public async Task<List<AppointmentsTienDmDisplayDto>> GetDisplayDtosByStatusForStaffAsync(int statusId)
+        {
+            var appointments = await _context.AppointmentsTienDms
+                .Include(a => a.AppointmentStatusesTienDm)
+                .Include(a => a.ServicesNhanVt)
+                .Include(a => a.UserAccount)
+                .Where(a => a.AppointmentStatusesTienDmid == statusId)
+                .ToListAsync();
+
+            return appointments.Select(appointment => new AppointmentsTienDmDisplayDto
+            {
+                AppointmentsTienDmid = appointment.AppointmentsTienDmid,
+                UserAccountId = appointment.UserAccountId,
+                ServicesNhanVtid = appointment.ServicesNhanVtid,
+                AppointmentStatusesTienDmid = appointment.AppointmentStatusesTienDmid,
+                AppointmentDate = appointment.AppointmentDate,
+                AppointmentTime = appointment.AppointmentTime,
+                SamplingMethod = appointment.SamplingMethod,
+                Address = appointment.Address,
+                ContactPhone = appointment.ContactPhone,
+                Notes = appointment.Notes,
+                CreatedDate = appointment.CreatedDate,
+                ModifiedDate = appointment.ModifiedDate,
+                TotalAmount = appointment.TotalAmount,
+                IsPaid = appointment.IsPaid,
+                StatusName = appointment.AppointmentStatusesTienDm?.StatusName,
+                ServiceName = appointment.ServicesNhanVt?.ServiceName,
+                UserName = appointment.UserAccount?.FullName,
+                UserEmail = appointment.UserAccount?.Email
+            }).ToList();
+        }
     }
 }
