@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dna_backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=ssh.phrimp.io.vn;Database=SE18_PRN232_SE1730_G3_DNATestingSystem_V2;User=sa;Password=Passw0rd!;TrustServerCertificate=True;
+    ports:
+      - "7199:7199"
